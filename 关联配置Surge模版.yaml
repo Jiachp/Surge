@@ -1,0 +1,69 @@
+[Proxy]
+#!include TAG.conf
+
+[Proxy Group]
+# smart 智能策略组
+⚡️ 智能选择 = smart, include-all-proxies=true, policy-regex-filter="(?i)(香港|港|HK|Hong Kong|日本|东京|大阪|JP|Japan|Tokyo|Osaka)"
+
+# 地区节点：手动选择
+🖐 手动选择 = select, include-all-proxies=true
+🇭🇰 香港节点 = select, include-all-proxies=true, policy-regex-filter="(?i)(香港|港|HK|Hong Kong)"
+🇯🇵 日本节点 = select, include-all-proxies=true, policy-regex-filter="(?i)(日本|东京|大阪|JP|Japan|Tokyo|Osaka)"
+🇸🇬 新加坡节点 = select, include-all-proxies=true, policy-regex-filter="(?i)(新加坡|狮城|SG|Singapore)"
+🇺🇸 美国节点 = select, include-all-proxies=true, policy-regex-filter="(?i)(美国|美西|美东|洛杉矶|西雅图|硅谷|达拉斯|纽约|United States|Los Angeles|Seattle|Silicon Valley|Dallas|New York|(^|[^A-Za-z])(US|USA)([^A-Za-z]|$))"
+
+# 服务分流
+🤖 AI = select, 🇯🇵 日本节点, 🇺🇸 美国节点, 🇭🇰 香港节点, ⚡️ 智能选择, 🖐 手动选择, 🇸🇬 新加坡节点
+🔍 Google = select, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇸 美国节点, ⚡️ 智能选择, 🖐 手动选择, 🇸🇬 新加坡节点
+🍎 Apple = select, DIRECT, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇸 美国节点, ⚡️ 智能选择, 🖐 手动选择
+✈️ Telegram = select, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇸 美国节点, ⚡️ 智能选择, 🖐 手动选择, 🇸🇬 新加坡节点
+💻 GitHub = select, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇸 美国节点, ⚡️ 智能选择, 🖐 手动选择, 🇸🇬 新加坡节点
+🪟 Microsoft = select, DIRECT, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇸 美国节点, ⚡️ 智能选择, 🖐 手动选择, 🇸🇬 新加坡节点
+🎬 国外媒体 = select, ⚡️ 智能选择, 🖐 手动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇸 美国节点, 🇸🇬 新加坡节点
+🇨🇳 国内 = select, DIRECT, 🖐 手动选择
+🌍 国外 = select, ⚡️ 智能选择, 🖐 手动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇸 美国节点, 🇸🇬 新加坡节点
+🐟 兜底分流 = select, 🌍 国外, ⚡️ 智能选择, 🖐 手动选择, DIRECT
+
+
+[Rule]
+# 1. 局域网、系统探测：必须直连
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Lan/Lan.list,DIRECT
+
+# AI 必须放在 Google、Microsoft 前面
+# 否则 Gemini 会先命中 Google，Copilot 会先命中 Microsoft
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/OpenAI/OpenAI.list,🤖 AI
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Claude/Claude.list,🤖 AI
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Gemini/Gemini.list,🤖 AI
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Copilot/Copilot.list,🤖 AI
+
+# 独立服务
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Google/Google.list,🔍 Google
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Telegram/Telegram.list,✈️ Telegram
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/GitHub/GitHub.list,💻 GitHub
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple.list,🍎 Apple
+
+# Microsoft
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Microsoft/Microsoft.list,🪟 Microsoft
+
+# 国外流媒体
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/GlobalMedia/GlobalMedia.list,🎬 国外媒体
+
+# 国内网站和国内 IP
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/ChinaMax/ChinaMax.list,🇨🇳 国内
+
+# 已知需要代理的国外服务
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Global/Global.list,🌍 国外
+
+# 未命中流量
+FINAL,🐟 兜底分流
+
+Script]
+# 显示运行时间及MitM等功能开关状态
+My-Surge-Panel = type=generic,script-path=https://raw.githubusercontent.com/Jiachp/Surge/refs/heads/main/My-Surge-Panel.js,argument=icon=crown.fill&color=#f6c970
+
+[Panel]
+# macOs不生效
+# > EDC_Surge-Panel
+# 显示运行时间及MitM等功能开关状态
+# 点击刷新为重载配置
+My-Surge-Panel = script-name=My-Surge-Panel,update-interval=1
