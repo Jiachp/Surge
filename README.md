@@ -18,8 +18,9 @@ Surge 运行状态 = type=generic, script-path=你的Raw地址, argument=icon=sp
 
 ## 参考 𝗘𝗿𝗱𝗼𝗻𝗴𝗖𝗵𝗮𝗻 配置
 https://github.com/erdongchanyo/Rules/blob/main/Surge/Panels/EDC_Surge-Panel.js
+```
 
-### Surge 面板
-<img width="1290" height="752" alt="微信图片_20260705153635_93_2" src="https://github.com/user-attachments/assets/5e84195d-1560-46d0-ab72-fcc21cc25455" />
-### 运行状态
-<img width="1290" height="1010" alt="微信图片_20260705153634_92_2" src="https://github.com/user-attachments/assets/211c7705-b76a-46c0-a248-925fc214f916" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/5e84195d-1560-46d0-ab72-fcc21cc25455" width="45%" alt="Surge 面板">
+  <img src="https://github.com/user-attachments/assets/211c7705-b76a-46c0-a248-925fc214f916" width="45%" alt="Surge 运行状态">
+</p>
